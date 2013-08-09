@@ -167,11 +167,11 @@ module Longupload::Receiver
     end
 
     # create the file if necessary (but don't truncate)
-    @fh = File.open("#{@cachefile}.todo.#{@blockindex}","a+")
+    @fh = File.open("#{@cachefile}.todo.#{@blockindex}","ab+")
     @fh.close
 
     # re-open the file with a mode that supports seek+write
-    @fh = File.open("#{@cachefile}.todo.#{@blockindex}","r+")
+    @fh = File.open("#{@cachefile}.todo.#{@blockindex}","rb+")
     @fh.flock(File::LOCK_EX)
     @fh.seek(@writepos, IO::SEEK_SET)
     raise "Unable to seek to correct position in file" if @fh.pos != @writepos
@@ -186,7 +186,7 @@ module Longupload::Receiver
 
       # Then write the rest of the data
       @blockindex += 1
-      @fh = File.open("#{@cachefile}.todo.#{@blockindex}","w")
+      @fh = File.open("#{@cachefile}.todo.#{@blockindex}","wb")
       @fh.write(@next_data_to_write)
       raise "Write error" if @fh.pos != @next_data_to_write.size
       @fh.close
