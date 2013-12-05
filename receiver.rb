@@ -178,13 +178,15 @@ module Longupload::Receiver
     @fh.write(@data_to_write)
     raise "Write error: #{@fh.pos} != #{@writepos + @data_to_write.size}" if @fh.pos != @writepos + @data_to_write.size
     @fh.close
-    # Did we roll over to a new file?
-    if (@next_bytes_to_write > 0) then
-      # Give someone a chance to copy this to the warehouse, or queue
-      # a job to do so.
-      @ds.after_longupload_block(@blockindex)
 
-      # Then write the rest of the data
+    if @bytes_to_write + @writepos == WAREHOUSE_BLOCK_SIZE
+      # Did we finish a block? Give someone a chance to copy it to the
+      # warehouse, or queue a job to do so.
+      @ds.after_longupload_block(@blockindex)
+    end
+
+    if @next_bytes_to_write > 0 then
+      # Did we roll over to a new block? Write the rest of the data.
       @blockindex += 1
       @fh = File.open("#{@cachefile}.todo.#{@blockindex}","wb")
       @fh.write(@next_data_to_write)
@@ -196,8 +198,7 @@ module Longupload::Receiver
 
     new_bytes_received = @response['piece_size'] + @response['piece_position']
 
-    if new_bytes_received == @response['upload_size'] or
-        new_bytes_received == @blockindex * WAREHOUSE_BLOCK_SIZE then
+    if new_bytes_received == @response['upload_size'] then
       @ds.after_longupload_block(@blockindex)
     end
 
