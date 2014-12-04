@@ -25,8 +25,8 @@ module Longupload::Receiver
       @response['success'] = false
       @response['error'] = e.message
       @response['rails_errors'] = @ds.errors if @ds and @ds.respond_to? :errors
-      logger.debug e.message
-      logger.debug e.backtrace.join("\n")
+      logger.error e.message
+      logger.error e.backtrace.join("\n")
     end
     logger.debug @response.to_json
     render :json => @response
