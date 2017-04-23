@@ -36,7 +36,12 @@ module Longupload::StoresInWarehouse
         end
         File.unlink todo_file
       else
-        logger.error "longupload #{self.class} #{self.id} arv-put block #{block_index} exited #{exitvalue}: #{std_err.gets}"
+        logger.error "longupload #{self.class} #{self.id} arv-put block #{block_index} exited #{exitvalue}:"
+        logger.error "==========================================================================="
+        while line=std_err.gets
+          logger.error line
+        end
+        logger.error "==========================================================================="
         raise "Block write failed"
       end
     end
@@ -71,7 +76,12 @@ EOS
           save!
         end
       else
-        logger.error "longupload #{self.class} #{self.id} collections.create exited #{exitvalue}: #{std_err.gets}"
+        logger.error "longupload #{self.class} #{self.id} collections.create exited #{exitvalue}:"
+        logger.error "==========================================================================="
+        while line=std_err.gets
+          logger.error line
+        end
+        logger.error "==========================================================================="
         raise "Collection write failed"
       end
     end
