@@ -49,7 +49,7 @@ module Longupload::StoresInWarehouse
 
   def after_longupload_file
     app_name = Rails.application.class.to_s.split('::').first
-    Open3.popen3('python', '-c', <<EOS,
+    Open3.popen3('/usr/share/python2.7/dist/python-arvados-python-client/bin/python', '-c', <<EOS,
 import arvados
 import sys
 print (arvados.api('v1').
