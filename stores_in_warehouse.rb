@@ -54,7 +54,7 @@ import arvados
 import sys
 print (arvados.api('v1').
        collections().
-       create(body={'manifest_text': sys.stdin.read(), 'name': sys.argv[-1]}).
+       create(body={'manifest_text': sys.stdin.read(), 'name': sys.argv[-1], 'owner_uuid': "#{PARTICIPANT_UPLOADED_DATA_PROJECT}"}).
        execute()['portable_data_hash'])
 EOS
                  "#{app_name}--#{ROOT_URL}--#{self.class}--#{self.id}"
