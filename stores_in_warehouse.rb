@@ -1,3 +1,7 @@
+# Copyright (C) The Arvados Authors. All rights reserved.
+#
+# SPDX-License-Identifier: AGPL-3.0
+
 module Longupload::StoresInWarehouse
   def self.included(mod)
     mod.instance_eval do
@@ -18,7 +22,7 @@ module Longupload::StoresInWarehouse
       raise "Oops, #{self.class} #{self.id} block #{block_index} not found in staging area."
     end
 
-    Open3.popen3('arv-put', '--raw', todo_file) do |std_in, std_out, std_err, wait_thr|
+    Open3.popen3('arv-put', '--no-cache', '--raw', todo_file) do |std_in, std_out, std_err, wait_thr|
       block_locator = std_out.gets.strip rescue nil
       if wait_thr.respond_to? :value
         # ruby 1.9.3 actual exit status
